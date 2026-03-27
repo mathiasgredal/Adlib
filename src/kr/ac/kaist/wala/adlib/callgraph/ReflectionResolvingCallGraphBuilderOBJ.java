@@ -101,13 +101,16 @@ public class ReflectionResolvingCallGraphBuilderOBJ extends SSAPropagationCallGr
 
                 if (params == null) {
                     System.err.println("[Warning] cannot solving reflection: " + instruction + " in " + caller);
-                    PointerKey formal = getTargetPointerKey(target, 0);
-                    PointerKey actual = getPointerKeyForLocal(caller, instruction.getUse(1));
+                    IMethod callee = target.getMethod();
+                    if (callee.getNumberOfParameters() > 0 && callee.getParameterType(0).isReferenceType()) {
+                        PointerKey formal = getTargetPointerKey(target, 0);
+                        PointerKey actual = getPointerKeyForLocal(caller, instruction.getUse(1));
 
-                    if (formal instanceof FilteredPointerKey) {
-                        system.newConstraint(formal, filterOperator, actual);
-                    } else {
-                        system.newConstraint(formal, assignOperator, actual);
+                        if (formal instanceof FilteredPointerKey) {
+                            system.newConstraint(formal, filterOperator, actual);
+                        } else {
+                            system.newConstraint(formal, assignOperator, actual);
+                        }
                     }
                 } else {
                     for (int i = 0; i < target.getMethod().getNumberOfParameters(); i++) {

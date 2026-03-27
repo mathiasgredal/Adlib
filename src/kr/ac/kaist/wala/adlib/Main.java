@@ -16,10 +16,15 @@ import com.ibm.wala.ssa.SSAOptions;
 import org.json.simple.parser.ParseException;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+
+import com.ibm.wala.util.collections.Pair;
 
 import kr.ac.kaist.wala.adlib.analysis.APITarget;
 import kr.ac.kaist.wala.adlib.analysis.malicious.MaliciousPatternChecker;
@@ -104,8 +109,45 @@ public class Main {
     System.out.println("\tDone: " + ((pcEnd - cgEnd)/1000d) + "s");
 
     System.out.println("\n\n####### RESULT ( " + sdk + " ) #######");
-    for(String s : res.patterns()){
-        System.out.println(s + ": " + res.getSeeds(s).size());
+    System.out.println("#Bridge IFDS seeds (Hybrid SDK entry nodes × tracked args): " + mpc.getSeeds().size());
+    System.out.println("#During checking, each line ends with [trackedVar=k]: k is the IFDS slot index (0 = whole bridge), not a hit count.");
+    // res lists only path-complete matches (PathFinder); not the same as bridge seeds above.
+    Set<String> allFamilies = new LinkedHashSet<>();
+    for (MaliciousPatternChecker.MaliciousPattern p : maliciousPatterns) {
+        allFamilies.add(p.getResultKey());
+    }
+    int hits = 0;
+    for (String family : allFamilies) {
+        Set<?> seedSet = res.getSeeds(family);
+        int n = seedSet == null ? 0 : seedSet.size();
+        if (n > 0) {
+            hits += n;
+        }
+        System.out.println(family + ": " + n + " path-complete match(es)");
+        if (seedSet != null && !seedSet.isEmpty()) {
+            List<String> lines = new ArrayList<>();
+            for (Object o : seedSet) {
+                Pair p = (Pair) o;
+                CGNode bridge = (CGNode) p.fst;
+                int trackedVar = (Integer) p.snd;
+                lines.add(
+                    bridge.getMethod().getReference()
+                        + "  context="
+                        + bridge.getContext()
+                        + "  [trackedVar="
+                        + trackedVar
+                        + "]");
+            }
+            Collections.sort(lines);
+            for (String line : lines) {
+                System.out.println("    " + line);
+            }
+        }
+    }
+    if (hits == 0) {
+        System.out.println("(No path-level matches: for every pattern family, PathFinder found no full chain from a bridge seed");
+        System.out.println(" through all malicious-pattern steps on the IFDS propagation graph — often because the app has no");
+        System.out.println(" matching API sites or no dataflow path connects the bridge to those sites.)");
     }
     System.out.println("######################");
 

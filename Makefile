@@ -1,6 +1,5 @@
-adlib.jar: 
-	@gradle build
-	@cp build/libs/Adlib.jar .
+adlib.jar:
+	@gradle jar
 
 clean:
 	@gradle clean

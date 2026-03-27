@@ -1,7 +1,9 @@
 apply plugin: 'java'
 apply plugin: 'application'
 
-mainClassName = 'kr/ac/kaist/wala/hybridroid/shell/Shell'
+application {
+  mainClass = 'kr.ac.kaist.wala.hybridroid.shell.Shell'
+}
 
 repositories {
     mavenCentral()
@@ -20,20 +22,20 @@ sourceSets {
 }
 
 dependencies {
-	compile project(':MWALA:kr.ac.kaist.wala.hybridroid.util')
-	compile project(':MWALA:com.ibm.wala.cast.js.rhino')
-	compile project(':MWALA:com.ibm.wala.util')
-	compile project(':MWALA:com.ibm.wala.cast.js.html.nu_validator')
-	compile project(':MWALA:com.ibm.wala.cast')
-	compile project(':MWALA:com.ibm.wala.dalvik')
-	compile project(':MWALA:com.ibm.wala.cast.js.rhino.test')
-	compile project(':MWALA:com.ibm.wala.shrike')
-	compile project(':MWALA:com.ibm.wala.cast.js')
-	compile project(':MWALA:com.ibm.wala.cast.js.test')
-	compile project(':MWALA:com.ibm.wala.cast.java')
-	compile project(':MWALA:com.ibm.wala.core')
-	compile project(':MWALA:com.ibm.wala.core.tests')
-	compile files('libs/apktool_2.0.2.jar')
-	compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.6'
-	compile group: 'commons-cli', name: 'commons-cli', version: '1.4'
+	implementation project(':MWALA:kr.ac.kaist.wala.hybridroid.util')
+	implementation project(':MWALA:com.ibm.wala.cast.js.rhino')
+	implementation project(':MWALA:com.ibm.wala.util')
+	implementation project(':MWALA:com.ibm.wala.cast.js.html.nu_validator')
+	implementation project(':MWALA:com.ibm.wala.cast')
+	implementation project(':MWALA:com.ibm.wala.dalvik')
+	implementation project(':MWALA:com.ibm.wala.cast.js.rhino.test')
+	implementation project(':MWALA:com.ibm.wala.shrike')
+	implementation project(':MWALA:com.ibm.wala.cast.js')
+	implementation project(':MWALA:com.ibm.wala.cast.js.test')
+	implementation project(':MWALA:com.ibm.wala.cast.java')
+	implementation project(':MWALA:com.ibm.wala.core')
+	implementation project(':MWALA:com.ibm.wala.core.tests')
+	implementation files('libs/apktool_2.0.2.jar')
+	implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.6'
+	implementation group: 'commons-cli', name: 'commons-cli', version: '1.4'
 }

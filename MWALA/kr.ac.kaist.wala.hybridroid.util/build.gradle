@@ -24,7 +24,7 @@ sourceSets {
 
 
 dependencies {
-	compile project(':MWALA:com.ibm.wala.util')
-	compile project(':MWALA:com.ibm.wala.dalvik')
-	compile project(':MWALA:com.ibm.wala.core')
+	implementation project(':MWALA:com.ibm.wala.util')
+	implementation project(':MWALA:com.ibm.wala.dalvik')
+	implementation project(':MWALA:com.ibm.wala.core')
 }

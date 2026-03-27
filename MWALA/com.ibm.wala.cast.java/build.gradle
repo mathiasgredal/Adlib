@@ -24,12 +24,12 @@ sourceSets {
 
 
 dependencies {
-	compile project(':MWALA:com.ibm.wala.cast')
-	compile project(':MWALA:com.ibm.wala.core')
-	compile project(':MWALA:com.ibm.wala.shrike')
-	compile project(':MWALA:com.ibm.wala.util')
+	implementation project(':MWALA:com.ibm.wala.cast')
+	implementation project(':MWALA:com.ibm.wala.core')
+	implementation project(':MWALA:com.ibm.wala.shrike')
+	implementation project(':MWALA:com.ibm.wala.util')
 	// https://mvnrepository.com/artifact/org.eclipse.core/org.eclipse.core.runtime
-	compile group: 'org.eclipse.core', name: 'org.eclipse.core.runtime', version: '3.10.0.v20140318-2214'
+	implementation group: 'org.eclipse.core', name: 'org.eclipse.core.runtime', version: '3.10.0.v20140318-2214'
 	// https://mvnrepository.com/artifact/org.osgi/org.osgi.core
-	compile group: 'org.osgi', name: 'org.osgi.core', version: '4.2.0'
+	implementation group: 'org.osgi', name: 'org.osgi.core', version: '4.2.0'
 }

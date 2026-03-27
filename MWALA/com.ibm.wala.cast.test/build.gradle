@@ -16,8 +16,9 @@ sourceSets {
 
 
 dependencies {
-	compile project(':MWALA:com.ibm.wala.cast')
-	compile project(':MWALA:com.ibm.wala.core')
-	compile project(':MWALA:com.ibm.wala.core.tests')
-	compile project(':MWALA:com.ibm.wala.util')
+	implementation project(':MWALA:com.ibm.wala.cast')
+	implementation project(':MWALA:com.ibm.wala.core')
+	implementation project(':MWALA:com.ibm.wala.core.tests')
+	implementation project(':MWALA:com.ibm.wala.util')
+	implementation group: 'junit', name: 'junit', version: '4.13.2'
 }

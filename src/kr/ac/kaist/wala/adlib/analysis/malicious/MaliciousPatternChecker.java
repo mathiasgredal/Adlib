@@ -277,6 +277,9 @@ public class MaliciousPatternChecker {
         //for progress prints
         int numOfSeeds = seeds.size();
         int curi = 0;
+        int totalPfCalls = 0;
+        int totalPfNonEmpty = 0;
+        int maxGraphNodes = 0;
 
         System.out.println();
 
@@ -291,7 +294,7 @@ public class MaliciousPatternChecker {
             //System.out.print(String.format("\033[%dA",count)); // Move up
             System.out.print("\033[2K"); // Erase line content
             //System.err.print(dup(" ", 50)+"\r");
-            System.out.print("\t|" + dup("=", curi) + dup(" ", (numOfSeeds-curi)) + "| ( " + curi + " / " + numOfSeeds + " ) \t" + n.getMethod().getName() + " [ " + var + " ]\r");
+            System.out.print("\t|" + dup("=", curi) + dup(" ", (numOfSeeds-curi)) + "| ( " + curi + " / " + numOfSeeds + " ) \t" + n.getMethod().getName() + " [trackedVar=" + var + "]\r");
             try {
                 BasicBlockInContext entry = icfg.getEntriesForProcedure(n)[0];
 		        boolean isArray = false;
@@ -309,6 +312,7 @@ public class MaliciousPatternChecker {
                     res.addAll(ifds.analyze(entry, new LocalDataFact(n, var, f)));
                 }
                 PropagationGraph graph = ifds.getPropagationGraph();
+                maxGraphNodes = Math.max(maxGraphNodes, graph.getNumberOfNodes());
 
                 PathFinder pf = new PathFinder(cg, icfg, cha, graph);
 
@@ -316,6 +320,10 @@ public class MaliciousPatternChecker {
 
                 for(MaliciousPattern mp : mps) {
                     Set<PathFinder.Path> paths = pf.findPaths(seedPP, mp);
+                    totalPfCalls++;
+                    if (!paths.isEmpty()) {
+                        totalPfNonEmpty++;
+                    }
                     if (paths.size() != 0) {
                         for (PathFinder.Path path : paths) {
                             boolean isMatched = path.isMatched();
@@ -333,6 +341,7 @@ public class MaliciousPatternChecker {
         }
         System.err.println();
         System.err.println();
+
 
         return results;
     }
@@ -445,6 +454,11 @@ public class MaliciousPatternChecker {
 
         public String getName(){
             return this.patternName;
+        }
+
+        /** Result map key in {@link Results} (same as {@link #getName()} with trailing digits removed). */
+        public String getResultKey() {
+            return this.name;
         }
 
         @Override

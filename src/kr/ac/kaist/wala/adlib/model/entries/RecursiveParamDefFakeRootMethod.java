@@ -99,8 +99,12 @@ public class RecursiveParamDefFakeRootMethod extends FakeRootMethod {
             if (invokeCtor) {
                 IMethod ctor = findLeastArgInitMethod(klass);
                 if (ctor != null) {
-                    addInvocation(makeArgs(ctor, instance), CallSiteReference.make(statements.size(), ctor.getReference(),
-                            IInvokeInstruction.Dispatch.SPECIAL));
+                    int[] args = makeArgs(ctor, instance);
+                    // makeArgs returns null if any parameter could not be materialized (e.g. failed allocation).
+                    if (args != null) {
+                        addInvocation(args, CallSiteReference.make(statements.size(), ctor.getReference(),
+                                IInvokeInstruction.Dispatch.SPECIAL));
+                    }
                 }
             }
         }
@@ -197,6 +201,7 @@ public class RecursiveParamDefFakeRootMethod extends FakeRootMethod {
         if (site == null) {
             throw new IllegalArgumentException("site is null");
         }
+        // params may be null for static methods with no parameters (see BasicCallGraph.init).
         CallSiteReference newSite = CallSiteReference.make(statements.size(), site.getDeclaredTarget(), site.getInvocationCode());
         SSAInvokeInstruction s = null;
         if (newSite.getDeclaredTarget().getReturnType().equals(TypeReference.Void)) {

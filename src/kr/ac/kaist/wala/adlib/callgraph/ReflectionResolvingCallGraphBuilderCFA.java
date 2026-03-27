@@ -82,13 +82,19 @@ public class ReflectionResolvingCallGraphBuilderCFA extends nCFABuilder {
 
                 if (params == null) {
                     System.err.println("[Warning] cannot solving reflection: " + instruction + " in " + caller);
-                    PointerKey formal = getTargetPointerKey(target, 0);
-                    PointerKey actual = getPointerKeyForLocal(caller, instruction.getUse(1));
+                    // Fallback maps Method.invoke's receiver (use 1) to callee formal 0. Callees with no
+                    // formals (e.g. static methods with no args) have no parameter slot 0 — getTargetPointerKey
+                    // would throw. Skip when there is no reference parameter at 0 (same filter as below).
+                    IMethod callee = target.getMethod();
+                    if (callee.getNumberOfParameters() > 0 && callee.getParameterType(0).isReferenceType()) {
+                        PointerKey formal = getTargetPointerKey(target, 0);
+                        PointerKey actual = getPointerKeyForLocal(caller, instruction.getUse(1));
 
-                    if (formal instanceof FilteredPointerKey) {
-                        system.newConstraint(formal, filterOperator, actual);
-                    } else {
-                        system.newConstraint(formal, assignOperator, actual);
+                        if (formal instanceof FilteredPointerKey) {
+                            system.newConstraint(formal, filterOperator, actual);
+                        } else {
+                            system.newConstraint(formal, assignOperator, actual);
+                        }
                     }
                 } else {
                     for (int i = 0; i < target.getMethod().getNumberOfParameters(); i++) {

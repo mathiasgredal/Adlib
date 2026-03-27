@@ -41,6 +41,15 @@ public class PathFinder {
 
     boolean debug = false;
     boolean pd = false;
+    /** Debug: how many propagation-graph start points exist for the first step of {@code mp} (see {@link #findPaths}). */
+    public int debugCountFirstStepTargets(MaliciousPatternChecker.MaliciousPattern mp) {
+        List<MaliciousPatternChecker.MaliciousPoint> pts = mp.getPoints();
+        if (pts.isEmpty()) {
+            return 0;
+        }
+        return convertMPtoPPs(pts.get(0)).size();
+    }
+
     public Set<Path> findPaths(PropagationPoint seed, MaliciousPatternChecker.MaliciousPattern mp){
         Set<List<PropagationPoint>> res = new HashSet<>();
         List<PropagationPoint> initPath = new ArrayList<>();
